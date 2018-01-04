@@ -131,10 +131,28 @@ class StructDef
     }
 }
 
-
-
 $packageFile = $argv[1];
-if (!is_file($packageFile)){
+
+//支持目录下文件批量解压
+ if (is_dir($packageFile)){
+    $handle = opendir($packageFile);
+    if($handle){
+        while(($fl = readdir($handle)) !== false){
+            $temp = $packageFile.DIRECTORY_SEPARATOR.$fl;
+            //如果不加  $fl!='.' && $fl != '..'  则会造成把$dir的父级目录也读取出来
+            if(is_file($temp)){
+                if($fl!='.' && $fl != '..'){
+                    $targetDir = $temp . '.unpacked';
+                    unpack_wxapkg($temp, $targetDir);
+                }
+            }
+        }
+    }  
+    }else if (is_file($packageFile)){
+
+    $targetDir = $packageFile . '.unpacked';
+    unpack_wxapkg($packageFile, $targetDir);
+}else{
     echo <<<HELP
 Usage:
     [php] {$argv[0]} <xxx.wxapkg>
@@ -145,10 +163,6 @@ HELP;
 
     exit(1);
 }
-
-$targetDir = $packageFile . '.unpacked';
-
-unpack_wxapkg($packageFile, $targetDir);
 
 exit(0);
 
