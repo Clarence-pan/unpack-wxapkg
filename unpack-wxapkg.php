@@ -148,8 +148,7 @@ $packageFile = $argv[1];
             }
         }
     }  
-    }else if (is_file($packageFile)){
-
+}else if (is_file($packageFile)){
     $targetDir = $packageFile . '.unpacked';
     unpack_wxapkg($packageFile, $targetDir);
 }else{
